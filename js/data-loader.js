@@ -6,13 +6,13 @@
 // File paths configuration
 const DATA_FILES = {
     main: [
-        'data/acd_results_with_pdf_circular_content.json',
-        'data/bpd_results_with_pdf_circular_content.json',
-        'data/bprd_results_with_pdf_circular_content.json',
-        'data/bsd_results_with_pdf_circular_content.json',
-        'data/bsrvd_results_with_pdf_circular_content.json'
+        'acd_results_with_pdf_circular_content.json',
+        'bpd_results_with_pdf_circular_content.json',
+        'bprd_results_with_pdf_circular_content.json',
+        'bsd_results_with_pdf_circular_content.json',
+        'bsrvd_results_with_pdf_circular_content.json'
     ],
-    cache: 'data/circular_content_cache.json'
+    cache: 'circular_content_cache.json'
 };
 
 /**
