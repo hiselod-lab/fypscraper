@@ -196,6 +196,9 @@ function initializeVisualization(graphData) {
     // Update statistics
     updateStatistics(graphData);
 
+    // Fit to view with padding (zoomed out more)
+    cy.fit(50);
+    
     // Load saved layout preference
     const savedLayout = localStorage.getItem('selectedLayout') || 'forceDirected';
     if (savedLayout !== 'forceDirected') {
@@ -221,14 +224,20 @@ function setupEventHandlers() {
         );
 
         // Light highlight
-        node.style('border-width', 3);
-        node.connectedEdges().style('width', 3);
+        node.style('border-width', 2.5);
+        node.connectedEdges().style({
+            'width': 2,
+            'opacity': 1
+        });
     });
 
     cy.on('mouseout', 'node', function(event) {
         hideTooltip();
-        event.target.style('border-width', node => node.data('inCycle') ? 3 : 2);
-        cy.edges().style('width', edge => edge.data('isCycleEdge') ? 3 : 2);
+        event.target.style('border-width', node => node.data('inCycle') ? 2.5 : 1.5);
+        cy.edges().style({
+            'width': edge => edge.data('isCycleEdge') ? 2 : 1,
+            'opacity': edge => edge.data('isCycleEdge') ? 0.8 : 0.6
+        });
     });
 
     // Node click
@@ -242,7 +251,10 @@ function setupEventHandlers() {
         cy.elements().addClass('dimmed');
         node.removeClass('dimmed').addClass('highlighted');
         node.neighborhood().removeClass('dimmed');
-        node.connectedEdges().removeClass('dimmed').style('width', 4);
+        node.connectedEdges().removeClass('dimmed').style({
+            'width': 3,
+            'opacity': 1
+        });
     });
 
     // Node double-click (open URL)
@@ -265,19 +277,28 @@ function setupEventHandlers() {
             position.y
         );
 
-        edge.style('width', 4);
+        edge.style({
+            'width': 3,
+            'opacity': 1
+        });
     });
 
     cy.on('mouseout', 'edge', function(event) {
         hideTooltip();
-        event.target.style('width', edge => edge.data('isCycleEdge') ? 3 : 2);
+        event.target.style({
+            'width': edge => edge.data('isCycleEdge') ? 2 : 1,
+            'opacity': edge => edge.data('isCycleEdge') ? 0.8 : 0.6
+        });
     });
 
     // Background click (deselect)
     cy.on('tap', function(event) {
         if (event.target === cy) {
             cy.elements().removeClass('dimmed highlighted');
-            cy.edges().style('width', edge => edge.data('isCycleEdge') ? 3 : 2);
+            cy.edges().style({
+                'width': edge => edge.data('isCycleEdge') ? 2 : 1,
+                'opacity': edge => edge.data('isCycleEdge') ? 0.8 : 0.6
+            });
             hideDetailsPanel();
         }
     });
@@ -333,7 +354,7 @@ function updateLayoutButtons(activeLayout) {
  * Reset view to default zoom and center
  */
 function resetView() {
-    cy.fit();
+    cy.fit(50);
     cy.center();
 }
 
