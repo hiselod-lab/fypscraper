@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Reference Visualization - SBP Regulatory Circulars</title>
+
+    <!-- Cytoscape.js and extensions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>State Bank of Pakistan - Circular Reference Visualization</h1>
+        <p class="subtitle">Interactive mapping of regulatory circulars and their cross-reference relationships</p>
+    </header>
+
+    <!-- Control Panel -->
+    <div id="control-panel">
+        <!-- Layout Controls -->
+        <div class="control-group">
+            <label>Layout:</label>
+            <div class="button-group">
+                <button id="layout-force" class="active">Force-Directed</button>
+                <button id="layout-hierarchical">Hierarchical</button>
+                <button id="layout-radial">Radial</button>
+            </div>
+        </div>
+
+        <!-- Department Filter -->
+        <div class="control-group">
+            <label>Department:</label>
+            <div id="department-filters" class="checkbox-group">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Year Range Filter -->
+        <div class="control-group">
+            <label>Year Range:</label>
+            <div class="range-container">
+                <input type="range" id="year-min" min="2000" max="2025" value="2000">
+                <input type="range" id="year-max" min="2000" max="2025" value="2025">
+                <div id="year-display">Selected: 2000 - 2025</div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="control-group">
+            <label>Search:</label>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search by ID or title...">
+                <button id="search-clear">Clear</button>
+            </div>
+            <div id="search-results"></div>
+        </div>
+
+        <!-- Display Options -->
+        <div class="control-group">
+            <label>Display Options:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="show-cycles-only"> Show cycles only</label>
+                <label><input type="checkbox" id="show-labels"> Show labels</label>
+                <label><input type="checkbox" id="show-isolated" checked> Show isolated nodes</label>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="control-group">
+            <label>Statistics:</label>
+            <div id="statistics">
+                <span id="stat-nodes">Nodes: 0</span>
+                <span id="stat-edges">Edges: 0</span>
+                <span id="stat-cycles">Cycles: 0</span>
+            </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="control-group">
+            <button id="reset-view" class="primary-button">Reset View</button>
+            <button id="reset-filters" class="secondary-button">Reset Filters</button>
+        </div>
+
+        <!-- Loading Status -->
+        <div id="loading-status" class="control-group">
+            <div class="loading-spinner"></div>
+            <span id="loading-text">Loading data files...</span>
+        </div>
+    </div>
+
+    <!-- Visualization Container -->
+    <div id="cy-container"></div>
+
+    <!-- Details Panel -->
+    <div id="details-panel" class="hidden">
+        <button id="close-details" class="close-button">&times;</button>
+        <h2>Circular Details</h2>
+        <div id="details-content">
+            <div class="detail-row">
+                <strong>ID:</strong>
+                <span id="detail-id"></span>
+            </div>
+            <div class="detail-row">
+                <strong>Title:</strong>
+                <span id="detail-title"></span>
+            </div>
+            <div class="detail-row">
+                <strong>Date:</strong>
+                <span id="detail-date"></span>
+            </div>
+            <div class="detail-row">
+                <strong>Department:</strong>
+                <span id="detail-department"></span>
+            </div>
+            <div class="detail-row">
+                <strong>Type:</strong>
+                <span id="detail-type"></span>
+            </div>
+            <div class="detail-row">
+                <strong>In Cycle:</strong>
+                <span id="detail-cycle"></span>
+            </div>
+            <div class="detail-row">
+                <strong>References (outgoing):</strong>
+                <div id="detail-references"></div>
+            </div>
+            <div class="detail-row">
+                <strong>Referenced by (incoming):</strong>
+                <div id="detail-incoming"></div>
+            </div>
+            <div class="detail-row">
+                <strong>Content Summary:</strong>
+                <div id="detail-content"></div>
+            </div>
+            <div class="detail-row">
+                <strong>URL:</strong>
+                <a id="detail-url" href="#" target="_blank"></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="hidden"></div>
+
+    <!-- JavaScript modules -->
+    <script src="js/data-loader.js"></script>
+    <script src="js/graph-builder.js"></script>
+    <script src="js/cycle-detector.js"></script>
+    <script src="js/visualization.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/ui-controls.js"></script>
+
+    <!-- Main initialization -->
+    <script>
+        // Initialize application when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Show loading status
+                document.getElementById('loading-status').style.display = 'block';
+
+                // Load and parse data files
+                console.log('Loading data files...');
+                const loadedData = await loadDataFiles();
+
+                // Build graph model
+                console.log('Building graph model...');
+                const graphData = buildGraph(loadedData);
+
+                // Detect cycles
+                console.log('Detecting cycles...');
+                const cycleInfo = detectCycles(graphData);
+
+                // Apply cycle information to graph
+                applyCycleInfo(graphData, cycleInfo);
+
+                // Initialize visualization
+                console.log('Initializing visualization...');
+                initializeVisualization(graphData);
+
+                // Initialize UI controls
+                console.log('Initializing UI controls...');
+                initializeControls();
+
+                // Hide loading status
+                document.getElementById('loading-status').style.display = 'none';
+
+                console.log('Ready!');
+            } catch (error) {
+                console.error('Error initializing application:', error);
+                document.getElementById('loading-text').textContent = 'Error loading data: ' + error.message;
+                document.querySelector('.loading-spinner').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

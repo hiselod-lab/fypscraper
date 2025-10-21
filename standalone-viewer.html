@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Reference Visualization - Standalone</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; }
+        #instructions { padding: 20px; background: #667eea; color: white; text-align: center; }
+        #instructions h1 { margin: 0 0 10px 0; }
+        #instructions p { margin: 5px 0; }
+        #cy-container { width: 100%; height: calc(100vh - 120px); background: #fafafa; }
+        .button { padding: 10px 20px; margin: 10px; background: white; color: #667eea; border: none; cursor: pointer; border-radius: 4px; }
+        .button:hover { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <h1>📊 Circular Reference Visualization - Standalone Version</h1>
+        <p>This is a simplified demo version. For the full-featured tool with data, use the complete package.</p>
+        <p>⚠️ <strong>Data files not included</strong> - Download the full package to load actual SBP circular data.</p>
+        <button class="button" onclick="location.href='https://github.com/yourusername/circular-viz'">Get Full Version</button>
+    </div>
+    <div id="cy-container"></div>
+    <script>
+        // Demo data
+        const demoData = {
+            nodes: [
+                { data: { id: 'BPRD-1', label: 'BPRD Circular No. 1', type: 'circular', department: 'BPRD', departmentColor: '#6699ff' }},
+                { data: { id: 'BPRD-2', label: 'BPRD Circular No. 2', type: 'circular', department: 'BPRD', departmentColor: '#6699ff' }},
+                { data: { id: 'ACD-1', label: 'ACD Circular No. 1', type: 'circular', department: 'ACD', departmentColor: '#66cc99' }},
+                { data: { id: 'PDF-1', label: 'Regulations.pdf', type: 'pdf', department: 'BPRD', departmentColor: '#ff9966' }}
+            ],
+            edges: [
+                { data: { source: 'BPRD-1', target: 'BPRD-2' }},
+                { data: { source: 'BPRD-2', target: 'ACD-1' }},
+                { data: { source: 'ACD-1', target: 'BPRD-1' }}, // Cycle!
+                { data: { source: 'BPRD-1', target: 'PDF-1' }}
+            ]
+        };
+
+        // Initialize Cytoscape with demo data
+        const cy = cytoscape({
+            container: document.getElementById('cy-container'),
+            elements: demoData,
+            style: [
+                {
+                    selector: 'node[type="circular"]',
+                    style: {
+                        'background-color': 'data(departmentColor)',
+                        'width': 50,
+                        'height': 50,
+                        'label': 'data(label)',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'font-size': '10px',
+                        'color': '#333',
+                        'border-width': 2,
+                        'border-color': '#ff9933'
+                    }
+                },
+                {
+                    selector: 'node[type="pdf"]',
+                    style: {
+                        'background-color': '#ff9966',
+                        'width': 30,
+                        'height': 30,
+                        'shape': 'rectangle',
+                        'label': 'data(label)',
+                        'font-size': '9px'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': '#ff9933',
+                        'target-arrow-color': '#ff9933',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier'
+                    }
+                }
+            ],
+            layout: {
+                name: 'circle',
+                animate: true
+            }
+        });
+
+        console.log('Demo visualization loaded. This shows a simple cycle: BPRD-1 → BPRD-2 → ACD-1 → BPRD-1');
+        console.log('Download the full package for complete functionality with real data!');
+    </script>
+</body>
+</html>
