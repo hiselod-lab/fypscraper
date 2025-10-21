@@ -15,11 +15,11 @@ const LAYOUTS = {
         name: 'cose',
         animate: true,
         animationDuration: 500,
-        nodeRepulsion: 8000,
-        idealEdgeLength: 100,
+        nodeRepulsion: 15000,
+        idealEdgeLength: 150,
         edgeElasticity: 100,
         nestingFactor: 1.2,
-        gravity: 1,
+        gravity: 0.8,
         numIter: 1000,
         initialTemp: 200,
         coolingFactor: 0.95,
@@ -30,8 +30,8 @@ const LAYOUTS = {
         rankDir: 'TB',
         animate: true,
         animationDuration: 500,
-        nodeSep: 50,
-        rankSep: 100,
+        nodeSep: 80,
+        rankSep: 150,
         padding: 30
     },
     radial: {
@@ -44,7 +44,7 @@ const LAYOUTS = {
         levelWidth: function() {
             return 2;
         },
-        minNodeSpacing: 50,
+        minNodeSpacing: 80,
         padding: 30
     }
 };
@@ -73,13 +73,13 @@ function initializeVisualization(graphData) {
                     'background-color': 'data(departmentColor)',
                     'width': function(ele) {
                         const refCount = ele.data('refCount') || 0;
-                        return Math.max(40, Math.min(60, 40 + refCount * 2));
+                        return Math.max(20, Math.min(35, 20 + refCount * 1.5));
                     },
                     'height': function(ele) {
                         const refCount = ele.data('refCount') || 0;
-                        return Math.max(40, Math.min(60, 40 + refCount * 2));
+                        return Math.max(20, Math.min(35, 20 + refCount * 1.5));
                     },
-                    'border-width': 2,
+                    'border-width': 1.5,
                     'border-color': '#333',
                     'label': '',
                     'text-valign': 'center',
@@ -94,9 +94,9 @@ function initializeVisualization(graphData) {
                 selector: 'node[type="pdf"]',
                 style: {
                     'background-color': '#ff9966',
-                    'width': 25,
-                    'height': 25,
-                    'border-width': 2,
+                    'width': 15,
+                    'height': 15,
+                    'border-width': 1.5,
                     'border-color': '#333',
                     'shape': 'rectangle',
                     'label': '',
@@ -110,9 +110,9 @@ function initializeVisualization(graphData) {
                 selector: 'node[type="web"]',
                 style: {
                     'background-color': '#99ccff',
-                    'width': 20,
-                    'height': 20,
-                    'border-width': 2,
+                    'width': 12,
+                    'height': 12,
+                    'border-width': 1.5,
                     'border-color': '#333',
                     'shape': 'diamond',
                     'label': '',
@@ -125,7 +125,7 @@ function initializeVisualization(graphData) {
             {
                 selector: 'node[inCycle]',
                 style: {
-                    'border-width': 3,
+                    'border-width': 2.5,
                     'border-color': '#ff9933'
                 }
             },
@@ -134,12 +134,13 @@ function initializeVisualization(graphData) {
             {
                 selector: 'edge',
                 style: {
-                    'width': 2,
-                    'line-color': '#999',
-                    'target-arrow-color': '#999',
+                    'width': 1,
+                    'line-color': '#bbb',
+                    'target-arrow-color': '#bbb',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
-                    'arrow-scale': 1
+                    'arrow-scale': 0.8,
+                    'opacity': 0.6
                 }
             },
 
@@ -149,7 +150,8 @@ function initializeVisualization(graphData) {
                 style: {
                     'line-color': '#ff9933',
                     'target-arrow-color': '#ff9933',
-                    'width': 3
+                    'width': 2,
+                    'opacity': 0.8
                 }
             },
 
