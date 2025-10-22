@@ -377,10 +377,9 @@
         <div class="filter-bar">
             <div class="filter-control">
                 <label for="department">Department:</label>
-                <select id="department" v-model="selectedDepartment">
+                <select id="department" v-model="selectedDepartment" :disabled="uploadedDatasets.length === 0">
                     <option value="All">All Departments</option>
-                    <option value="ACD">ACD</option>
-                    <option value="BPRD">BPRD</option>
+                    <option v-for="dept in availableDepartments" :key="dept" :value="dept">{{ dept }}</option>
                 </select>
             </div>
 
@@ -682,6 +681,14 @@
                     result.sort((a, b) => b.year.localeCompare(a.year));
 
                     return result;
+                },
+                availableDepartments() {
+                    const departments = new Set();
+
+                    if (this.acdData) departments.add('ACD');
+                    if (this.bprdData) departments.add('BPRD');
+
+                    return Array.from(departments);
                 }
             },
             methods: {
