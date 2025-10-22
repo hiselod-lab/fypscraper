@@ -436,7 +436,8 @@
                 <div v-if="loading" class="loading">Loading data...</div>
                 <div v-else-if="error" class="error">{{ error }}</div>
                 <div v-else-if="!selectedDocument" class="content-placeholder">
-                    Select a document from the tree to view its content
+                    <span v-if="uploadedDatasets.length === 0">No data to display. Please upload JSON files above.</span>
+                    <span v-else>Select a document from the tree to view its content</span>
                 </div>
                 <div v-else>
                     <!-- Document Header -->
