@@ -408,7 +408,10 @@
             <div class="sidebar">
                 <div v-if="loading" class="loading">Loading data...</div>
                 <div v-else-if="error" class="error">{{ error }}</div>
-                <div v-else-if="groupedDocuments.length === 0" class="no-documents">No documents found</div>
+                <div v-else-if="groupedDocuments.length === 0" class="no-documents">
+                    <span v-if="uploadedDatasets.length === 0">No data to display. Please upload JSON files above.</span>
+                    <span v-else>No documents found</span>
+                </div>
                 <div v-else>
                     <div v-for="group in groupedDocuments" :key="group.year">
                         <div class="year-header">{{ group.year }} ({{ group.documents.length }} documents)</div>
