@@ -727,12 +727,11 @@
 
                     // Determine which datasets to include
                     const datasets = [];
-                    if (this.selectedDepartment === 'All' || this.selectedDepartment === 'ACD') {
-                        if (this.acdData) datasets.push({ data: this.acdData, dept: 'ACD' });
-                    }
-                    if (this.selectedDepartment === 'All' || this.selectedDepartment === 'BPRD') {
-                        if (this.bprdData) datasets.push({ data: this.bprdData, dept: 'BPRD' });
-                    }
+                    this.uploadedDatasets.forEach(dataset => {
+                        if (this.selectedDepartment === 'All' || this.selectedDepartment === dataset.department) {
+                            datasets.push({ data: dataset.data, dept: dataset.department });
+                        }
+                    });
 
                     // Extract documents from each dataset
                     datasets.forEach(({ data, dept }) => {
