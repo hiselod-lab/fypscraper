@@ -651,14 +651,14 @@
             computed: {
                 availableYears() {
                     const years = new Set();
-
-                    if (this.acdData && this.acdData.years) {
-                        Object.keys(this.acdData.years).forEach(year => years.add(year));
-                    }
-
-                    if (this.bprdData && this.bprdData.years) {
-                        Object.keys(this.bprdData.years).forEach(year => years.add(year));
-                    }
+                    
+                    this.uploadedDatasets.forEach(dataset => {
+                        if (this.selectedDepartment === 'All' || this.selectedDepartment === dataset.department) {
+                            if (dataset.data && dataset.data.years) {
+                                Object.keys(dataset.data.years).forEach(year => years.add(year));
+                            }
+                        }
+                    });
 
                     return Array.from(years).sort((a, b) => b.localeCompare(a));
                 },
