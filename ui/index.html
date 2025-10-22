@@ -330,8 +330,10 @@
                             :level="0"
                             :is-expanded="expandedNodes.has(generateNodeId(doc))"
                             :is-selected="selectedDocument && generateNodeId(selectedDocument) === generateNodeId(doc)"
-                            @toggle="toggleNodeExpansion(doc)"
-                            @select="selectDocument(doc)"
+                            :expanded-nodes="expandedNodes"
+                            :selected-node-id="selectedDocument ? generateNodeId(selectedDocument) : null"
+                            @toggle="toggleNodeExpansion"
+                            @select="selectDocument"
                         ></tree-node>
                     </div>
                 </div>
