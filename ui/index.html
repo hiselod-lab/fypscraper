@@ -454,6 +454,14 @@
                 isSelected: {
                     type: Boolean,
                     default: false
+                },
+                expandedNodes: {
+                    type: Set,
+                    required: true
+                },
+                selectedNodeId: {
+                    type: String,
+                    default: null
                 }
             },
             emits: ['toggle', 'select'],
@@ -467,12 +475,12 @@
                         <span
                             v-if="hasReferences"
                             class="expand-icon"
-                            @click.stop="$emit('toggle')"
+                            @click.stop="$emit('toggle', node)"
                         >
                             {{ isExpanded ? '▼' : '▶' }}
                         </span>
                         <span v-else class="expand-icon"></span>
-                        <span class="node-title" @click.stop="$emit('select')">
+                        <span class="node-title" @click.stop="$emit('select', node)">
                             <span v-if="node.type === 'pdf'">📕</span>
                             <span v-else>📄</span>
                             {{ node.title || node.ID || 'Untitled' }}
@@ -480,14 +488,16 @@
                     </div>
                     <div v-if="isExpanded && hasReferences && level < 5">
                         <tree-node
-                            v-for="(child, index) in node.references"
+                            v-for="(child, index) in actualReferences"
                             :key="generateChildKey(child, index)"
                             :node="child"
                             :level="level + 1"
-                            :is-expanded="childIsExpanded(child)"
-                            :is-selected="childIsSelected(child)"
-                            @toggle="handleChildToggle(child)"
-                            @select="handleChildSelect(child)"
+                            :is-expanded="expandedNodes.has(generateChildNodeId(child))"
+                            :is-selected="selectedNodeId === generateChildNodeId(child)"
+                            :expanded-nodes="expandedNodes"
+                            :selected-node-id="selectedNodeId"
+                            @toggle="(node) => $emit('toggle', node)"
+                            @select="(node) => $emit('select', node)"
                         ></tree-node>
                     </div>
                     <div v-if="level >= 5 && hasReferences" class="depth-warning">
@@ -504,25 +514,24 @@
                         return true;
                     }
                     return false;
+                },
+                actualReferences() {
+                    // Handle both top-level references and nested content.references
+                    if (this.node.references && this.node.references.length > 0) {
+                        return this.node.references;
+                    }
+                    if (this.node.content && this.node.content.references) {
+                        return this.node.content.references;
+                    }
+                    return [];
                 }
             },
             methods: {
                 generateChildKey(child, index) {
                     return `${child.url || child.title || 'unknown'}_${index}`;
                 },
-                childIsExpanded(child) {
-                    // Delegate to parent through custom event
-                    return false;
-                },
-                childIsSelected(child) {
-                    // Delegate to parent through custom event
-                    return false;
-                },
-                handleChildToggle(child) {
-                    this.$emit('toggle', child);
-                },
-                handleChildSelect(child) {
-                    this.$emit('select', child);
+                generateChildNodeId(child) {
+                    return `${child.url || child.title || 'unknown'}_${child.ID || ''}`;
                 }
             }
         };
