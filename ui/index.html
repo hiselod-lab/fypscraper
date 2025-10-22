@@ -385,7 +385,7 @@
 
             <div class="filter-control">
                 <label for="year">Year:</label>
-                <select id="year" v-model="selectedYear">
+                <select id="year" v-model="selectedYear" :disabled="uploadedDatasets.length === 0">
                     <option value="All">All Years</option>
                     <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
                 </select>
