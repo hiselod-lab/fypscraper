@@ -687,10 +687,11 @@
                 },
                 availableDepartments() {
                     const departments = new Set();
-
-                    if (this.acdData) departments.add('ACD');
-                    if (this.bprdData) departments.add('BPRD');
-
+                    this.uploadedDatasets.forEach(dataset => {
+                        if (dataset.department) {
+                            departments.add(dataset.department);
+                        }
+                    });
                     return Array.from(departments);
                 }
             },
