@@ -345,6 +345,34 @@
     <div id="app">
         <h1 style="margin-bottom: 20px; font-size: 24px;">SBP Circulars Visualizer</h1>
 
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h3>Upload JSON Files</h3>
+            <div class="upload-controls">
+                <input
+                    type="file"
+                    ref="fileInput"
+                    class="file-input-hidden"
+                    accept=".json"
+                    multiple
+                    @change="handleFileUpload"
+                >
+                <button class="upload-button" @click="$refs.fileInput.click()">Choose Files...</button>
+                <span class="upload-status">
+                    <span v-if="uploadedDatasets.length === 0">No files uploaded</span>
+                    <span v-else>
+                        {{ uploadedDatasets.length }} file{{ uploadedDatasets.length > 1 ? 's' : '' }} loaded:
+                        {{ uploadedDatasets.map(d => d.filename).join(', ') }}
+                    </span>
+                </span>
+                <button
+                    v-if="uploadedDatasets.length > 0"
+                    class="clear-button"
+                    @click="clearUploadedFiles"
+                >Clear All</button>
+            </div>
+        </div>
+
         <!-- Filter Bar -->
         <div class="filter-bar">
             <div class="filter-control">
