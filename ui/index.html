@@ -737,6 +737,14 @@
                     // Clear file input to allow re-uploading same file
                     event.target.value = '';
                 },
+                clearUploadedFiles() {
+                    this.uploadedDatasets = [];
+                    this.selectedDepartment = 'All';
+                    this.selectedYear = 'All';
+                    this.searchQuery = '';
+                    this.selectedDocument = null;
+                    this.expandedNodes = new Set();
+                },
                 getFilteredDocuments() {
                     const documents = [];
 
