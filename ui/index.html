@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBP Circulars Nested Structure Visualizer</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+
+        #app {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: #ffffff;
+            border: 1px solid #999999;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-control label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333333;
+            white-space: nowrap;
+        }
+
+        .filter-control select {
+            padding: 6px 10px;
+            border: 1px solid #999999;
+            background: #f5f5f5;
+            font-size: 13px;
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .filter-control input[type="text"] {
+            padding: 6px 10px;
+            border: 1px solid #999999;
+            font-size: 13px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-control {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Layout */
+        .main-layout {
+            display: flex;
+            gap: 15px;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 350px;
+            background: #ffffff;
+            border: 1px solid #999999;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .year-header {
+            font-weight: bold;
+            font-size: 14px;
+            padding: 8px;
+            margin-top: 10px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #cccccc;
+        }
+
+        .year-header:first-child {
+            margin-top: 0;
+        }
+
+        .no-documents {
+            text-align: center;
+            color: #666666;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid #999999;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-placeholder {
+            text-align: center;
+            color: #666666;
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 14px;
+            color: #cc0000;
+        }
+
+        /* Document Content */
+        .document-title {
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 2px solid #999999;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .document-metadata {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+
+        .document-metadata a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .document-metadata a:hover {
+            text-decoration: underline;
+        }
+
+        .document-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .document-content ul,
+        .document-content ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .document-content li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .document-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .document-content th {
+            background: #e0e0e0;
+            padding: 8px;
+            border: 1px solid #999999;
+            text-align: left;
+        }
+
+        .document-content td {
+            padding: 8px;
+            border: 1px solid #cccccc;
+        }
+
+        .hierarchical-content {
+            margin-bottom: 15px;
+        }
+
+        .sub-content {
+            margin-left: 20px;
+        }
+
+        /* References Section */
+        .references-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #999999;
+        }
+
+        .references-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .reference-item {
+            background: #ffffff;
+            border-left: 3px solid #999999;
+            padding: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .reference-item:hover {
+            background: #e0e0e0;
+        }
+
+        /* Tree Node Styles */
+        .tree-node-wrapper {
+            margin: 2px 0;
+        }
+
+        .tree-node {
+            padding: 6px;
+            font-size: 13px;
+            border-left: 2px solid #cccccc;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .tree-node:hover {
+            background: #f5f5f5;
+        }
+
+        .tree-node.selected {
+            background: #e0e0e0;
+            font-weight: bold;
+            border-left: 3px solid #333333;
+        }
+
+        .expand-icon {
+            display: inline-block;
+            width: 15px;
+            font-weight: bold;
+            margin-right: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .node-title {
+            flex: 1;
+        }
+
+        .depth-warning {
+            font-size: 11px;
+            color: #999999;
+            font-style: italic;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1 style="margin-bottom: 20px; font-size: 24px;">SBP Circulars Visualizer</h1>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-control">
+                <label for="department">Department:</label>
+                <select id="department" v-model="selectedDepartment">
+                    <option value="All">All Departments</option>
+                    <option value="ACD">ACD</option>
+                    <option value="BPRD">BPRD</option>
+                </select>
+            </div>
+
+            <div class="filter-control">
+                <label for="year">Year:</label>
+                <select id="year" v-model="selectedYear">
+                    <option value="All">All Years</option>
+                    <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
+                </select>
+            </div>
+
+            <div class="search-control">
+                <label for="search">Search:</label>
+                <input
+                    type="text"
+                    id="search"
+                    v-model="searchQuery"
+                    placeholder="Enter circular title or ID..."
+                >
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div v-if="loading" class="loading">Loading data...</div>
+                <div v-else-if="error" class="error">{{ error }}</div>
+                <div v-else-if="groupedDocuments.length === 0" class="no-documents">No documents found</div>
+                <div v-else>
+                    <div v-for="group in groupedDocuments" :key="group.year">
+                        <div class="year-header">{{ group.year }} ({{ group.documents.length }} documents)</div>
+                        <tree-node
+                            v-for="doc in group.documents"
+                            :key="generateNodeId(doc)"
+                            :node="doc"
+                            :level="0"
+                            :is-expanded="expandedNodes.has(generateNodeId(doc))"
+                            :is-selected="selectedDocument && generateNodeId(selectedDocument) === generateNodeId(doc)"
+                            @toggle="toggleNodeExpansion(doc)"
+                            @select="selectDocument(doc)"
+                        ></tree-node>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div v-if="loading" class="loading">Loading data...</div>
+                <div v-else-if="error" class="error">{{ error }}</div>
+                <div v-else-if="!selectedDocument" class="content-placeholder">
+                    Select a document from the tree to view its content
+                </div>
+                <div v-else>
+                    <!-- Document Header -->
+                    <div class="document-title">{{ selectedDocument.title || selectedDocument.ID || 'Untitled Document' }}</div>
+                    <div class="document-metadata">
+                        {{ selectedDocument.ID || selectedDocument.title }} •
+                        {{ selectedDocument.date || 'N/A' }} •
+                        <a :href="selectedDocument.url" target="_blank">Original Link</a>
+                    </div>
+
+                    <!-- Document Content -->
+                    <div class="document-content">
+                        <div v-if="!selectedDocument.content || selectedDocument.content.length === 0">
+                            <p style="color: #666;">This document has no content text</p>
+                        </div>
+                        <div v-else>
+                            <div v-for="(item, index) in selectedDocument.content" :key="index">
+                                <!-- Plain Text Content -->
+                                <p v-if="item.type === 'content' || item.type === 'paragraph'">{{ item.text }}</p>
+
+                                <!-- Hierarchical Content -->
+                                <div v-else-if="item.type === 'hierarchical_content'" class="hierarchical-content">
+                                    <p>{{ item.main_text }}</p>
+                                    <div v-if="item.sub_content" class="sub-content">
+                                        <div v-for="(subItem, subIndex) in item.sub_content" :key="subIndex">
+                                            <p v-if="subItem.type === 'content' || subItem.type === 'paragraph'">{{ subItem.text }}</p>
+                                            <ul v-else-if="subItem.type === 'list'">
+                                                <li v-for="(listItem, liIndex) in subItem.items" :key="liIndex">{{ listItem }}</li>
+                                            </ul>
+                                            <table v-else-if="subItem.type === 'table'">
+                                                <thead v-if="subItem.headers && subItem.headers.length > 0">
+                                                    <tr>
+                                                        <th v-for="(header, hIndex) in subItem.headers" :key="hIndex">{{ header }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(row, rIndex) in subItem.rows" :key="rIndex">
+                                                        <td v-for="(cell, cIndex) in row" :key="cIndex">{{ cell }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- List Content -->
+                                <ul v-else-if="item.type === 'list' && !item.ordered">
+                                    <li v-for="(listItem, liIndex) in item.items" :key="liIndex">{{ listItem }}</li>
+                                </ul>
+                                <ol v-else-if="item.type === 'list' && item.ordered">
+                                    <li v-for="(listItem, liIndex) in item.items" :key="liIndex">{{ listItem }}</li>
+                                </ol>
+
+                                <!-- Table Content -->
+                                <table v-else-if="item.type === 'table'">
+                                    <thead v-if="item.headers && item.headers.length > 0">
+                                        <tr>
+                                            <th v-for="(header, hIndex) in item.headers" :key="hIndex">{{ header }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, rIndex) in item.rows" :key="rIndex">
+                                            <td v-for="(cell, cIndex) in row" :key="cIndex">{{ cell }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- References Section -->
+                    <div v-if="selectedDocument.references && selectedDocument.references.length > 0" class="references-section">
+                        <div class="references-title">Referenced Documents ({{ selectedDocument.references.length }}):</div>
+                        <div
+                            v-for="(reference, refIndex) in selectedDocument.references"
+                            :key="refIndex"
+                            class="reference-item"
+                            @click="handleReferenceClick(reference)"
+                        >
+                            <span v-if="reference.type === 'pdf'">📕</span>
+                            <span v-else>📄</span>
+                            {{ reference.title }} →
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        // TreeNode Component
+        const TreeNode = {
+            name: 'TreeNode',
+            props: {
+                node: {
+                    type: Object,
+                    required: true
+                },
+                level: {
+                    type: Number,
+                    default: 0
+                },
+                isExpanded: {
+                    type: Boolean,
+                    default: false
+                },
+                isSelected: {
+                    type: Boolean,
+                    default: false
+                }
+            },
+            emits: ['toggle', 'select'],
+            template: `
+                <div class="tree-node-wrapper">
+                    <div
+                        class="tree-node"
+                        :class="{ selected: isSelected }"
+                        :style="{ marginLeft: (level * 20) + 'px' }"
+                    >
+                        <span
+                            v-if="hasReferences"
+                            class="expand-icon"
+                            @click.stop="$emit('toggle')"
+                        >
+                            {{ isExpanded ? '▼' : '▶' }}
+                        </span>
+                        <span v-else class="expand-icon"></span>
+                        <span class="node-title" @click.stop="$emit('select')">
+                            <span v-if="node.type === 'pdf'">📕</span>
+                            <span v-else>📄</span>
+                            {{ node.title || node.ID || 'Untitled' }}
+                        </span>
+                    </div>
+                    <div v-if="isExpanded && hasReferences && level < 5">
+                        <tree-node
+                            v-for="(child, index) in node.references"
+                            :key="generateChildKey(child, index)"
+                            :node="child"
+                            :level="level + 1"
+                            :is-expanded="childIsExpanded(child)"
+                            :is-selected="childIsSelected(child)"
+                            @toggle="handleChildToggle(child)"
+                            @select="handleChildSelect(child)"
+                        ></tree-node>
+                    </div>
+                    <div v-if="level >= 5 && hasReferences" class="depth-warning">
+                        (Maximum nesting depth reached)
+                    </div>
+                </div>
+            `,
+            computed: {
+                hasReferences() {
+                    if (this.node.references && this.node.references.length > 0) {
+                        return true;
+                    }
+                    if (this.node.content && this.node.content.references && this.node.content.references.length > 0) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            methods: {
+                generateChildKey(child, index) {
+                    return `${child.url || child.title || 'unknown'}_${index}`;
+                },
+                childIsExpanded(child) {
+                    // Delegate to parent through custom event
+                    return false;
+                },
+                childIsSelected(child) {
+                    // Delegate to parent through custom event
+                    return false;
+                },
+                handleChildToggle(child) {
+                    this.$emit('toggle', child);
+                },
+                handleChildSelect(child) {
+                    this.$emit('select', child);
+                }
+            }
+        };
+
+        // Main App
+        createApp({
+            components: {
+                TreeNode
+            },
+            data() {
+                return {
+                    acdData: null,
+                    bprdData: null,
+                    loading: true,
+                    error: null,
+                    selectedDepartment: 'All',
+                    selectedYear: 'All',
+                    searchQuery: '',
+                    selectedDocument: null,
+                    expandedNodes: new Set()
+                };
+            },
+            computed: {
+                availableYears() {
+                    const years = new Set();
+
+                    if (this.acdData && this.acdData.years) {
+                        Object.keys(this.acdData.years).forEach(year => years.add(year));
+                    }
+
+                    if (this.bprdData && this.bprdData.years) {
+                        Object.keys(this.bprdData.years).forEach(year => years.add(year));
+                    }
+
+                    return Array.from(years).sort((a, b) => b.localeCompare(a));
+                },
+                groupedDocuments() {
+                    const filtered = this.getFilteredDocuments();
+
+                    // Group by year
+                    const grouped = {};
+                    filtered.forEach(doc => {
+                        const year = doc.year || 'Unknown';
+                        if (!grouped[year]) {
+                            grouped[year] = [];
+                        }
+                        grouped[year].push(doc);
+                    });
+
+                    // Convert to array and sort
+                    const result = Object.keys(grouped).map(year => ({
+                        year,
+                        documents: grouped[year]
+                    }));
+
+                    result.sort((a, b) => b.year.localeCompare(a.year));
+
+                    return result;
+                }
+            },
+            methods: {
+                async loadData() {
+                    try {
+                        this.loading = true;
+                        this.error = null;
+
+                        // Load ACD data
+                        const acdResponse = await fetch('../acd_results_with_pdf_circular_content.json');
+                        if (!acdResponse.ok) {
+                            throw new Error('Failed to load ACD data');
+                        }
+                        this.acdData = await acdResponse.json();
+
+                        // Load BPRD data
+                        const bprdResponse = await fetch('../bprd_results_with_pdf_circular_content.json');
+                        if (!bprdResponse.ok) {
+                            throw new Error('Failed to load BPRD data');
+                        }
+                        this.bprdData = await bprdResponse.json();
+
+                        this.loading = false;
+                    } catch (err) {
+                        this.error = 'Error loading data. Please ensure JSON files are accessible.';
+                        this.loading = false;
+                        console.error('Data loading error:', err);
+                    }
+                },
+                getFilteredDocuments() {
+                    const documents = [];
+
+                    // Determine which datasets to include
+                    const datasets = [];
+                    if (this.selectedDepartment === 'All' || this.selectedDepartment === 'ACD') {
+                        if (this.acdData) datasets.push({ data: this.acdData, dept: 'ACD' });
+                    }
+                    if (this.selectedDepartment === 'All' || this.selectedDepartment === 'BPRD') {
+                        if (this.bprdData) datasets.push({ data: this.bprdData, dept: 'BPRD' });
+                    }
+
+                    // Extract documents from each dataset
+                    datasets.forEach(({ data, dept }) => {
+                        if (!data.years) return;
+
+                        Object.keys(data.years).forEach(year => {
+                            // Year filter
+                            if (this.selectedYear !== 'All' && year !== this.selectedYear) {
+                                return;
+                            }
+
+                            const yearData = data.years[year];
+
+                            // Add circulars
+                            if (yearData.circulars) {
+                                yearData.circulars.forEach(circular => {
+                                    documents.push({
+                                        ...circular,
+                                        year,
+                                        department: dept,
+                                        documentType: 'circular'
+                                    });
+                                });
+                            }
+
+                            // Add circular letters
+                            if (yearData.circular_letters) {
+                                yearData.circular_letters.forEach(letter => {
+                                    documents.push({
+                                        ...letter,
+                                        year,
+                                        department: dept,
+                                        documentType: 'circular_letter'
+                                    });
+                                });
+                            }
+                        });
+                    });
+
+                    // Search filter
+                    if (this.searchQuery.trim() !== '') {
+                        const query = this.searchQuery.toLowerCase();
+                        return documents.filter(doc => {
+                            const title = (doc.title || '').toLowerCase();
+                            const id = (doc.ID || '').toLowerCase();
+                            const date = (doc.date || '').toLowerCase();
+                            return title.includes(query) || id.includes(query) || date.includes(query);
+                        });
+                    }
+
+                    return documents;
+                },
+                generateNodeId(node) {
+                    if (!node) return 'null';
+                    return `${node.url || node.title || 'unknown'}_${node.ID || ''}`;
+                },
+                toggleNodeExpansion(node) {
+                    const nodeId = this.generateNodeId(node);
+                    if (this.expandedNodes.has(nodeId)) {
+                        this.expandedNodes.delete(nodeId);
+                    } else {
+                        this.expandedNodes.add(nodeId);
+                    }
+                    // Force reactivity
+                    this.expandedNodes = new Set(this.expandedNodes);
+                },
+                selectDocument(doc) {
+                    // Check if doc has nested content structure (reference) or flat structure (top-level)
+                    if (doc.content && Array.isArray(doc.content)) {
+                        // Top-level document: content is direct array
+                        this.selectedDocument = doc;
+                    } else if (doc.content && doc.content.content) {
+                        // Reference document: content is nested, flatten it
+                        this.selectedDocument = {
+                            title: doc.title,
+                            ID: doc.title, // References don't have ID field, use title
+                            date: 'N/A', // References may not have date
+                            url: doc.url,
+                            content: doc.content.content, // Unwrap nested content
+                            references: doc.content.references || [] // Unwrap nested references
+                        };
+                    } else {
+                        // Malformed document, show error
+                        this.selectedDocument = {
+                            title: 'Error',
+                            ID: 'Error',
+                            date: 'N/A',
+                            url: '',
+                            content: [{ type: 'content', text: 'Unable to load document content.' }],
+                            references: []
+                        };
+                    }
+                },
+                handleReferenceClick(reference) {
+                    this.selectDocument(reference);
+
+                    // Optionally expand the node in the tree if it exists
+                    const nodeId = this.generateNodeId(reference);
+                    this.expandedNodes.add(nodeId);
+                    this.expandedNodes = new Set(this.expandedNodes);
+                }
+            },
+            mounted() {
+                this.loadData();
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
