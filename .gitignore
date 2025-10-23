@@ -1,0 +1,44 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Large cache files
+*_cache.json
+*_results*.json
+
+# Test outputs
+*_extracted*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+temp/
