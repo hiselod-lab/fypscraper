@@ -1,6 +1,6 @@
 # PDF Extractor
 
-A powerful Python tool for extracting PDF content with complete layout preservation. Converts PDFs to structured JSON format suitable for LLM processing and PDF regeneration.
+A simple, powerful Python tool for extracting PDF content with complete layout preservation. Converts PDFs to structured JSON format suitable for LLM processing and PDF regeneration.
 
 ## Key Features
 
@@ -11,6 +11,7 @@ A powerful Python tool for extracting PDF content with complete layout preservat
 - **Self-Contained Output:** Images embedded as base64, no external dependencies
 - **Fast Performance:** Optimized extraction pipeline with optional features
 - **LLM-Ready:** JSON structure designed for AI processing and PDF regeneration
+- **Simple Code:** Single-file architecture for easy understanding and modification
 
 ## Installation
 
@@ -27,8 +28,7 @@ A powerful Python tool for extracting PDF content with complete layout preservat
 ### Install PDF Extractor
 
 ```bash
-# Clone repository
-git clone https://github.com/hiselod-lab/pdf_extractor.git
+# Clone or navigate to the directory
 cd pdf_extractor
 
 # Install in development mode
@@ -248,44 +248,46 @@ The extracted JSON contains four main sections:
 
 ```
 pdf_extractor/
-├── README.md
-├── requirements.txt
-├── setup.py
-├── .gitignore
-├── examples/
-│   └── (sample PDFs and outputs)
-├── tests/
+├── README.md                    # This file
+├── requirements.txt             # Dependencies
+├── setup.py                     # Package setup
+├── .gitignore                   # Git ignore rules
+├── examples/                    # Sample PDFs and outputs
+├── tests/                       # Test suite
 │   ├── __init__.py
 │   └── test_*.py
-└── pdf_extractor/
-    ├── __init__.py
-    ├── __main__.py (CLI entry point)
-    ├── extractor.py (main orchestrator)
-    ├── text_processor.py
-    ├── image_processor.py
-    ├── table_processor.py
-    ├── shape_processor.py
-    ├── font_registry.py
-    ├── json_builder.py
-    ├── utils.py
-    └── config.py
+└── pdf_extractor/              # Main package (simplified!)
+    ├── __init__.py             # Package exports
+    ├── __main__.py             # CLI entry point
+    └── extractor.py            # Complete extraction pipeline (single file!)
 ```
+
+**Simplified Architecture:** All extraction logic is consolidated into a single, easy-to-navigate `extractor.py` file (~1,270 lines). This makes the codebase simple to understand, modify, and debug.
+
+## Code Overview
+
+The `extractor.py` file contains everything in logical sections:
+
+1. **Configuration:** All constants and settings
+2. **Utilities:** Helper functions for colors, fonts, validation
+3. **FontRegistry:** Global font management
+4. **Processors:** Text, Image, Table, and Shape extraction classes
+5. **JSONBuilder:** Output serialization
+6. **PDFExtractor:** Main orchestrator class
+
+This single-file design means:
+- Easy to understand the full pipeline
+- Simple to modify behavior
+- No jumping between multiple files
+- Clear code organization with section markers
 
 ## Contributing
 
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run tests: `pytest tests/`
-6. Submit a pull request
+Contributions welcome! The simplified structure makes it easy to add features or fix bugs.
 
 **Development setup:**
 ```bash
-# Clone and install in development mode
-git clone https://github.com/hiselod-lab/pdf_extractor.git
+# Clone or navigate to directory
 cd pdf_extractor
 pip install -e .
 pip install pytest pytest-cov
@@ -296,6 +298,13 @@ pytest tests/
 # Run with coverage
 pytest --cov=pdf_extractor tests/
 ```
+
+**To add features:**
+1. Open `pdf_extractor/extractor.py` - everything is here!
+2. Find the relevant section (clearly marked with headers)
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## License
 
@@ -309,5 +318,4 @@ MIT License - see LICENSE file for details
 
 ## Support
 
-For issues, questions, or contributions, please visit:
-https://github.com/hiselod-lab/pdf_extractor/issues
+For issues or questions, please open an issue on GitHub.
