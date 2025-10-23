@@ -4,8 +4,7 @@ Command-line interface for PDF Extractor.
 
 import sys
 import argparse
-from .extractor import PDFExtractor, PDFExtractionError
-from .config import VERSION
+from .extractor import PDFExtractor, PDFExtractionError, VERSION
 
 
 def main():
@@ -104,8 +103,6 @@ Examples:
         if args.verbose:
             print()
             print("Statistics:")
-            # Re-extract to get stats (or modify to store after first extraction)
-            # For now, just show success
             print(f"  Processing time: {extractor.end_time - extractor.start_time:.2f}s")
             if extractor.warnings:
                 print(f"  Warnings: {len(extractor.warnings)}")
