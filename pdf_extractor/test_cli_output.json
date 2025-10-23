@@ -1,0 +1,236 @@
+{
+  "document_metadata": {
+    "title": null,
+    "author": null,
+    "subject": null,
+    "creator": null,
+    "producer": null,
+    "creation_date": null,
+    "modification_date": null,
+    "page_count": 1,
+    "pdf_version": "1.4",
+    "is_encrypted": false,
+    "is_linearized": false
+  },
+  "fonts": {
+    "f_9b846c60": {
+      "name": "Helvetica",
+      "family": "Helvetica",
+      "is_bold": false,
+      "is_italic": false,
+      "is_monospace": false,
+      "is_serif": false
+    }
+  },
+  "pages": [
+    {
+      "page_number": 1,
+      "dimensions": {
+        "width": 612.0,
+        "height": 792.0,
+        "rotation": 0
+      },
+      "content_blocks": [
+        {
+          "block_id": "p1_shp0",
+          "block_type": "shape",
+          "bbox": {
+            "x0": 72.0,
+            "y0": 200.0,
+            "x1": 300.0,
+            "y1": 250.0
+          },
+          "z_index": 1,
+          "data": {
+            "type": "shape",
+            "shape_type": "line",
+            "stroke": {
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 255,
+                "hex": "#0000ff"
+              },
+              "width": 2.0,
+              "style": "solid"
+            },
+            "fill": {
+              "color": null
+            },
+            "points": []
+          }
+        },
+        {
+          "block_id": "p1_b0",
+          "block_type": "text",
+          "bbox": {
+            "x0": 72.0,
+            "y0": 46.2,
+            "x1": 324.07,
+            "y1": 79.18
+          },
+          "z_index": 3000,
+          "data": {
+            "type": "text",
+            "lines": [
+              {
+                "bbox": {
+                  "x0": 72.0,
+                  "y0": 46.2,
+                  "x1": 324.07,
+                  "y1": 79.18
+                },
+                "spans": [
+                  {
+                    "text": "Sample PDF Document",
+                    "bbox": {
+                      "x0": 72.0,
+                      "y0": 46.2,
+                      "x1": 324.07,
+                      "y1": 79.18
+                    },
+                    "font_id": "f_9b846c60",
+                    "font_size": 24.0,
+                    "color": {
+                      "r": 0,
+                      "g": 0,
+                      "b": 0,
+                      "hex": "#000000"
+                    },
+                    "flags": {
+                      "superscript": false,
+                      "subscript": false,
+                      "underline": false,
+                      "strikethrough": false
+                    }
+                  }
+                ],
+                "direction": "ltr"
+              }
+            ]
+          }
+        },
+        {
+          "block_id": "p1_b1",
+          "block_type": "text",
+          "bbox": {
+            "x0": 72.0,
+            "y0": 107.1,
+            "x1": 278.75,
+            "y1": 123.59
+          },
+          "z_index": 3001,
+          "data": {
+            "type": "text",
+            "lines": [
+              {
+                "bbox": {
+                  "x0": 72.0,
+                  "y0": 107.1,
+                  "x1": 278.75,
+                  "y1": 123.59
+                },
+                "spans": [
+                  {
+                    "text": "This is a test document with some text.",
+                    "bbox": {
+                      "x0": 72.0,
+                      "y0": 107.1,
+                      "x1": 278.75,
+                      "y1": 123.59
+                    },
+                    "font_id": "f_9b846c60",
+                    "font_size": 12.0,
+                    "color": {
+                      "r": 0,
+                      "g": 0,
+                      "b": 0,
+                      "hex": "#000000"
+                    },
+                    "flags": {
+                      "superscript": false,
+                      "subscript": false,
+                      "underline": false,
+                      "strikethrough": false
+                    }
+                  }
+                ],
+                "direction": "ltr"
+              }
+            ]
+          }
+        },
+        {
+          "block_id": "p1_b2",
+          "block_type": "text",
+          "bbox": {
+            "x0": 72.0,
+            "y0": 137.1,
+            "x1": 202.72,
+            "y1": 153.59
+          },
+          "z_index": 3002,
+          "data": {
+            "type": "text",
+            "lines": [
+              {
+                "bbox": {
+                  "x0": 72.0,
+                  "y0": 137.1,
+                  "x1": 202.72,
+                  "y1": 153.59
+                },
+                "spans": [
+                  {
+                    "text": "It contains multiple lines.",
+                    "bbox": {
+                      "x0": 72.0,
+                      "y0": 137.1,
+                      "x1": 202.72,
+                      "y1": 153.59
+                    },
+                    "font_id": "f_9b846c60",
+                    "font_size": 12.0,
+                    "color": {
+                      "r": 0,
+                      "g": 0,
+                      "b": 0,
+                      "hex": "#000000"
+                    },
+                    "flags": {
+                      "superscript": false,
+                      "subscript": false,
+                      "underline": false,
+                      "strikethrough": false
+                    }
+                  }
+                ],
+                "direction": "ltr"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "extractor_version": "1.0.0",
+    "extraction_timestamp": "2025-10-23T09:27:00Z",
+    "source_file": "test_sample.pdf",
+    "source_file_size": 1268,
+    "source_file_hash": "fb356c101260e7a351d7355aa0e03c2a39808a1ce5d8965a66d0d9401f070ddf",
+    "processing_time": 0.33,
+    "ocr_pages": [],
+    "warnings": [],
+    "statistics": {
+      "total_text_blocks": 3,
+      "total_images": 0,
+      "total_tables": 0,
+      "total_shapes": 1,
+      "fonts_used": 1,
+      "languages_detected": [
+        "en"
+      ]
+    }
+  }
+}
